@@ -2,6 +2,9 @@
 
 An asynchronous, local background daemon that monitors `nvim-anywhere` buffers, detects typos, corrects them using Hugging Face language models, and automatically appends the corrected typos to your **espanso** configuration for future real-time text expansion.
 
+<img width="800" height="500" alt="demo" src="https://github.com/user-attachments/assets/45bf6d63-0db6-40e3-aad7-8ae4e0438b4a" />
+
+
 Whenever you leave insert-mode, the daemon isolates your last changes, computes the diff, and spins up a dedicated `kitty` window running `nvim -d` (or a granular split buffer) to visualize the changes.
 
 ---
