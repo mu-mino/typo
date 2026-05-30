@@ -1,3 +1,4 @@
+#!/home/muhammed-emin-eser/utils/typo/.venv/bin/python
 import argparse
 import difflib
 import re
@@ -173,26 +174,34 @@ def open_diff_in_kitty(original: str, corrected: str) -> None:
         return
 
     diff_text = build_clean_diff(original, corrected)
+
     with tempfile.NamedTemporaryFile(
         "w", delete=False, suffix="_diff.txt"
     ) as diff_file:
         diff_file.write(diff_text)
         diff_path = diff_file.name
 
-    kitty_cmd = [
-        "kitty",
-        "@",
-        "launch",
-        "--type=os-window",
+    with tempfile.NamedTemporaryFile(
+        "w", delete=False, suffix="_corrected.txt"
+    ) as corrected_file:
+        corrected_file.write(corrected)
+        corrected_path = corrected_file.name
+
+    nvim_args = [
         "nvim",
         "-c",
         "setlocal filetype=diff",
+        "-c",
+        f"vsplit {corrected_path}",
         diff_path,
     ]
+
+    kitty_cmd = ["kitty", "@", "launch", "--type=os-window"] + nvim_args
+
     try:
         subprocess.run(kitty_cmd, check=True)
     except (subprocess.CalledProcessError, FileNotFoundError):
-        subprocess.run(["nvim", "-c", "setlocal filetype=diff", diff_path], check=False)
+        subprocess.run(nvim_args, check=False)
 
 
 def should_process_file(file_path: str, watch_dir: Path) -> bool:
